@@ -1,26 +1,5 @@
-import json
 import requests
-
-
-def fetch_animal_data(animal_name):
-    """
-    Fetches animal data from the API for the given animal name.
-    Returns a list of results (can be empty if not found).
-    """
-    api_url = f'https://api.api-ninjas.com/v1/animals?name={animal_name}'
-    headers = {'X-Api-Key': 'g13wiSJKuuqKKeZVSTj5PA==v0bQqQNgDXk5EG3w'}
-
-    try:
-        response = requests.get(api_url, headers=headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"API error: {response.status_code}")
-            return []
-    except Exception as e:
-        print(f"Request failed: {e}")
-        return []
-
+import data_fetcher
 
 def serialize_animal(animal):
     """Convert a single animal dictionary into a formatted HTML string."""
@@ -79,11 +58,11 @@ def insert_into_template(template_path, output_html, output_file):
 
 
 def main():
-    animal_name = input("Enter a name of an animal: ").strip()
-    results = fetch_animal_data(animal_name)
+    animal_name = input("Please enter an animal: ").strip()
+    animals = data_fetcher.fetch_data(animal_name)
 
-    if results:
-        html_output = build_html(results)
+    if animals:
+        html_output = build_html(animals)
     else:
         html_output = build_error_html(animal_name)
 
