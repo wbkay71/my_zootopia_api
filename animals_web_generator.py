@@ -1,4 +1,26 @@
 import json
+import requests
+
+
+def fetch_fox_data_and_save():
+    """
+    Fetch data about the animal 'Fox' from the API and save it to animals_data.json.
+    """
+    api_url = 'https://api.api-ninjas.com/v1/animals?name=fox'
+    headers = {'X-Api-Key': 'g13wiSJKuuqKKeZVSTj5PA==v0bQqQNgDXk5EG3w'}
+
+    try:
+        response = requests.get(api_url, headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            with open('animals_data.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            print("✔️ Fox data saved to animals_data.json.")
+        else:
+            print(f"❌ API Error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Request failed: {e}")
 
 
 def load_animals(file_path):
@@ -53,7 +75,13 @@ def insert_into_template(template_path, output_html, output_file):
 
 
 def main():
+    # Fetch and save API data for "Fox"
+    fetch_fox_data_and_save()
+
+    # Load saved animal data from JSON file
     animals = load_animals("animals_data.json")
+
+    # Generate HTML and insert it into the template
     html_output = build_html(animals)
     insert_into_template("animals_template.html", html_output, "animals.html")
 

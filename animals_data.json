@@ -90,7 +90,7 @@
       "habitat": "Forests, prairies, deserts, mountains, cities, suburbs, tundra, scrub, near rivers, farms",
       "predators": "Gray wolves, coyotes, eagles, bears, humans and cougars",
       "diet": "Carnivore",
-      "type": "Mammal",
+      "type": "mammal",
       "common_name": "cross fox",
       "location": "North America and Canada",
       "color": "RedBlackSilver",
