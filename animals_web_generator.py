@@ -80,12 +80,19 @@ def main():
     # Fetch data and save to file
     fetch_data_and_save(animal_name)
 
-    # Load from saved JSON file and generate website
+    # Load animal data
     animals = load_animals("animals_data.json")
-    html_output = build_html(animals)
+
+    if not animals:
+        # No results found – display error message
+        html_output = f"<h2 style='color:red;'>The animal \"{animal_name}\" doesn't exist.</h2>"
+    else:
+        # Build regular HTML
+        html_output = build_html(animals)
+
+    # Insert into template
     insert_into_template("animals_template.html", html_output, "animals.html")
     print("🌍 Website was successfully generated to the file animals.html.")
-
 
 if __name__ == "__main__":
     main()
