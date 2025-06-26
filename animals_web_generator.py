@@ -1,4 +1,4 @@
- import data_fetcher
+import data_fetcher
 
 def serialize_animal(animal):
     """Convert a single animal dictionary into a formatted HTML string."""
