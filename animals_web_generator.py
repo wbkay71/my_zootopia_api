@@ -2,9 +2,10 @@ import json
 import requests
 
 
-def fetch_data_and_save(animal_name):
+def fetch_animal_data(animal_name):
     """
-    Fetch animal data from the API based on user input and save it to animals_data.json
+    Fetches animal data from the API for the given animal name.
+    Returns a list of results (can be empty if not found).
     """
     api_url = f'https://api.api-ninjas.com/v1/animals?name={animal_name}'
     headers = {'X-Api-Key': 'g13wiSJKuuqKKeZVSTj5PA==v0bQqQNgDXk5EG3w'}
@@ -12,20 +13,13 @@ def fetch_data_and_save(animal_name):
     try:
         response = requests.get(api_url, headers=headers)
         if response.status_code == 200:
-            data = response.json()
-            with open('animals_data.json', 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
-            print(f"✔️ Animal data for '{animal_name}' saved to animals_data.json.")
+            return response.json()
         else:
-            print(f"❌ API Error {response.status_code}: {response.text}")
+            print(f"API error: {response.status_code}")
+            return []
     except Exception as e:
-        print(f"❌ Request failed: {e}")
-
-
-def load_animals(file_path):
-    """Load the animal data from a JSON file."""
-    with open(file_path, "r", encoding="utf-8") as file:
-        return json.load(file)
+        print(f"Request failed: {e}")
+        return []
 
 
 def serialize_animal(animal):
@@ -62,6 +56,17 @@ def build_html(animal_list):
     return output
 
 
+def build_error_html(animal_name):
+    """Return styled error message as an HTML element."""
+    return f'''
+<li class="cards__item">
+  <div class="card__title" style="color: red; font-weight: bold;">
+    The animal "{animal_name}" doesn't exist.
+  </div>
+</li>
+'''
+
+
 def insert_into_template(template_path, output_html, output_file):
     """Replace placeholder in HTML template and write final HTML to file."""
     with open(template_path, "r", encoding="utf-8") as file:
@@ -74,25 +79,17 @@ def insert_into_template(template_path, output_html, output_file):
 
 
 def main():
-    # Ask user for animal name
-    animal_name = input("Enter a name of an animal: ")
+    animal_name = input("Enter a name of an animal: ").strip()
+    results = fetch_animal_data(animal_name)
 
-    # Fetch data and save to file
-    fetch_data_and_save(animal_name)
-
-    # Load animal data
-    animals = load_animals("animals_data.json")
-
-    if not animals:
-        # No results found – display error message
-        html_output = f"<h2 style='color:red;'>The animal \"{animal_name}\" doesn't exist.</h2>"
+    if results:
+        html_output = build_html(results)
     else:
-        # Build regular HTML
-        html_output = build_html(animals)
+        html_output = build_error_html(animal_name)
 
-    # Insert into template
     insert_into_template("animals_template.html", html_output, "animals.html")
-    print("🌍 Website was successfully generated to the file animals.html.")
+    print("✔️ Website was successfully generated to animals.html")
+
 
 if __name__ == "__main__":
     main()
